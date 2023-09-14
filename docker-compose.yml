@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    command: gunicorn --worker-tmp-dir /dev/shm userapp.wsgi -b 0.0.0.0:8000
+    volumes:
+      - .:/app/
+      - static_volume:/home/app/web/static
+    expose:
+      - 8000
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+    healthcheck:
+      test: curl --fail http://localhost:8000/ || exit 1
+      interval: 10s
+      timeout: 10s
+      start_period: 10s
+      retries: 3
+  db:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=userapp
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=userapp
+  nginx:
+    build: ./nginx
+    ports:
+      - 1337:80
+    volumes:
+      - static_volume:/home/app/web/static
+    depends_on:
+      - web
+
+volumes:
+  postgres_data:
+  static_volume:

@@ -1,0 +1,8 @@
+**/.env
+**/.git/
+.dockerignore
+Dockerfile
+docker-compose.yml
+**/env
+*.sublime-*
+**/__pycache__/
