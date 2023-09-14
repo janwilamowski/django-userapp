@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="content">
+    <form method="post" action="{% url 'login' %}" class="form">
+    {% if next %}
+        {% if user.is_authenticated %}
+        <p>Your account doesn't have access to this page. To proceed,
+        please login with an account that has access.</p>
+        {% else %}
+        <p>Please login to see this page.</p>
+        {% endif %}
+    {% endif %}
+
+    {% csrf_token %}
+    {{ form }}
+
+    <input type="submit" value="Login">
+    <input type="hidden" name="next" value="{{ next }}">
+
+        <p>Don't have an account yet? <a href="{% url 'register' %}">Register</a></p>
+    </form>
+</div>
+
+{% endblock %}
